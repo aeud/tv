@@ -1,0 +1,24 @@
+{
+  "name": "tv",
+  "version": "0.0.0",
+  "description": "",
+  "main": "tv.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aeud/tv.git"
+  },
+  "author": "adrien.eudes@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aeud/tv/issues"
+  },
+  "homepage": "https://github.com/aeud/tv",
+  "dependencies": {
+    "request": "x",
+    "request-progress": "x",
+    "xml2js": "x"
+  }
+}
