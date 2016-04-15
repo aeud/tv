@@ -1,3 +1,5 @@
+#! /usr/local/bin/node
+
 var request = require('request')
 var progress = require('request-progress')
 var fs = require('fs')
