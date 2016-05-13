@@ -45,21 +45,48 @@ request(parameters.feed, (err, resp, body) => {
 
 var downloadVideo = (url, fileName) => {
     request.get(url, (err, resp, body) => {
-        var exec = /https:\/\/openload\.co\/embed\/[\w\-\_]+\//gi.exec(body)
-        var link = exec[0]
-        request.get(link, (err, resp, body) => {
-            var exec = /ﾟωﾟﾉ=.+\) \(\uFF9F\u0398\uFF9F\)\) \('_'\);/gi.exec(body)
-            var js = exec[0]
-            var window = {}
-            eval(aaDecode(js))
-            progress(request(window.vs)).on('progress', state => {
-                var p = parseInt(100 * state.percentage)
-                if (p > progession) {
-                    console.log(p + '%')
-                    progession = p
+        var re1 = /https:\/\/openload\.co\/embed\/[\w\-\_]+\//gi
+        var re2 = /https:\/\/uptostream\.com\/iframe\/\w+/gi
+        if (re1.test(body)) {
+            var exec = /https:\/\/openload\.co\/embed\/[\w\-\_]+\//gi.exec(body)
+            var link = exec[0]
+            request.get(link, (err, resp, body) => {
+                var exec = /ﾟωﾟﾉ=.+\) \(\uFF9F\u0398\uFF9F\)\) \('_'\);/gi.exec(body)
+                var js = exec[0]
+                var window = {}
+                eval(aaDecode(js))
+                var link
+                for (label in window) {
+                    if (label != 'vt') {
+                        link = window[label]
+                    }
                 }
-            }).pipe(fs.createWriteStream('./' + fileName + '.mp4'))
-        })
+                progress(request(link)).on('progress', state => {
+                    var p = parseInt(100 * state.percentage)
+                    if (p > progession) {
+                        console.log(p + '%')
+                        progession = p
+                    }
+                }).pipe(fs.createWriteStream('./' + fileName + '.mp4'))
+            })
+        } else if (re2.test(body)) {
+            var exec = /https:\/\/uptostream\.com\/iframe\/\w+/gi.exec(body)
+            var link = exec[0]
+            request.get(link, (err, resp, body) => {
+                var exec = /\/\/[a-z0-9]+\.uptostream\.com\/\w+\/\w+\/\w+/gi.exec(body)
+                var link = exec[0]
+                progress(request('https:' + link)).on('progress', state => {
+                    var p = parseInt(100 * state.percentage)
+                    if (p > progession) {
+                        console.log(p + '%')
+                        progession = p
+                    }
+                }).pipe(fs.createWriteStream('./' + fileName + '.mp4'))
+            })
+        } else {
+            console.error('No openload')
+        }
+        
     })  
 }
 
